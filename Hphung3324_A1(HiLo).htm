@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html>
+
+<!--
+
+Caine Phung
+
+12-9-2022
+
+This source demonstrates having a single page with multiple <div> elements (each containing their own elements)
+and as well shows how to code a page so that each of the <div> elements is visible / hidden based on user clicks
+-->
+
+<head>
+
+<title>Hi-Lo Game</title>
+
+<script type="text/javascript">
+
+var whichDiv = 1;
+var minNum = 1 ;
+var randomNum = 0 ;
+var maxNum = 0;
+var name = "";
+var guess = 0;
+
+
+
+// ------------------------------------------------------------
+// This function is used to move the the next div.
+// ------------------------------------------------------------
+
+function nextDiv(){
+
+    if(whichDiv == 1) { // we're currently viewing the first div
+
+        document.getElementById("section1").style.display="block"; // show the first, hide the second.
+        document.getElementById("section2").style.display="none";
+    }
+
+    if(whichDiv == 2) { // we're currently viewing the second div
+
+        document.getElementById("section1").style.display="none"; // show the second, hide the first.
+        document.getElementById("section2").style.display="block";
+    }
+
+    if(whichDiv == 3) { // we're currently viewing the third div
+
+        document.getElementById("section2").style.display="none"; // show the third, hide the second.
+        document.getElementById("section3").style.display="block";
+    }
+
+    if(whichDiv == 4) { // we're currently viewing the fourth div
+
+        document.getElementById("section3").style.display="none"; // show the fourth, hide the third.
+        document.getElementById("section4").style.display="block";
+    }
+
+    if(whichDiv == 5) { // we're currently viewing the fourth div
+
+        document.getElementById("section4").style.display="none"; // show the fourth, hide the third.
+        document.getElementById("section2").style.display="block";
+        whichDiv = 2;
+
+    }
+}
+
+
+
+// ------------------------------------------------------------
+// This function is used to check user's name.
+// ------------------------------------------------------------
+
+function checkName() {
+
+    name = document.getElementById("userName").value;
+    // check that the person's name is not blank (input-level validation) 
+    if (name.length == 0) {
+    // error message / feedback
+        document.getElementById("nameError").innerHTML = "Your name <b>cannot</b> be BLANK.";
+    }
+
+    else{
+
+        whichDiv++; // let's move into the next phase of the "screens"
+        nextDiv(); // move onto the next DIV
+        document.getElementById("message1").innerHTML = name+" , " + "please enter a maximum number(interger) for the game:";
+    } 
+}
+
+
+// ------------------------------------------------------------
+// This function is used to check if the maximum 
+// number entered is in the correct range.
+// ------------------------------------------------------------
+
+function checkMax() {
+
+    maxNum = document.getElementById("maxNum").value;
+
+    if((parseInt(maxNum) >  Number.MAX_SAFE_INTEGER)  && (parseInt(maxNum) > parseInt(minNum))){
+
+        document.getElementById("maxError").innerHTML = "Number entered is too big, please enter a number from " + minNum + " to " + Number.MAX_SAFE_INTEGER;
+}
+
+    if ((!isNaN(maxNum)) && (parseInt(maxNum) > parseInt(minNum)) && ((parseInt(maxNum) <= Number.MAX_SAFE_INTEGER))) { //check format and range
+    
+        inRange = true;
+    }
+
+    if( parseInt(maxNum) < parseInt(minNum)){
+
+        // error message / feedback
+        document.getElementById("maxError").innerHTML = "Please enter a <b>number</b> greater than 1.";
+    }
+
+    if (inRange == true){
+
+        randomNumber(minNum,maxNum);
+        whichDiv++; // let's move into the next phase of the "screens"
+        nextDiv(); // move onto the next DIV
+    }
+}
+
+
+
+// -------------------------------------------------------------
+// This function is used to generate a random number.
+// -------------------------------------------------------------
+
+function randomNumber(min,max){
+
+    randomNum = Math.floor(Math.random() * (max-min+1)) + min;
+}
+
+
+
+// ------------------------------------------------------------
+// This function is used to check if the guess 
+// number entered is in the correct range.
+// ------------------------------------------------------------
+
+function guessNumber(){
+
+    guess = document.getElementById("guessNum").value;
+    var guess1 = parseInt(guess)+ parseInt(minNum);
+    var guess2 = parseInt(guess)- parseInt(minNum);
+
+    if((parseInt(guess) < parseInt(randomNum)) && (parseInt(guess) >= parseInt(minNum))){ //if guess number is smaller then random number
+
+         // error message / feedback
+        document.getElementById("guessError").innerHTML = "Your allowable guessing range is any value between " + guess1 + " and " + maxNum;
+        document.getElementById("message").innerHTML = "";
+    }
+
+
+    if((parseInt(guess) > parseInt(randomNum)) && (parseInt(guess) <= parseInt(maxNum))){ //if guess number is bigger then random number
+      
+        // error message / feedback
+        document.getElementById("guessError").innerHTML = "Your allowable guessing range is any value between " + minNum + " and " + guess2;
+        document.getElementById("message").innerHTML = "";
+    }
+
+    if((parseInt (guess) > parseInt(maxNum)) || (parseInt (guess) < parseInt(minNum) )) { //if guess number is out of range
+
+        // error message / feedback
+        document.getElementById("guessError").innerHTML = "Out of range. Your allowable guessing range is any value between " + minNum + " and " + maxNum;
+        document.getElementById("message").innerHTML = "";
+}
+
+    if(parseInt(guess) == parseInt(randomNum)){ //if guess number is equal to random number
+
+        whichDiv++; // let's move into the next phase of the "screens"
+        nextDiv(); // move onto the next DIV
+        document.body.style.backgroundColor = "lightgreen"; //check background colour
+    }
+}
+
+
+
+// ------------------------------------------------------------
+// This function is used to play the game again.
+// ------------------------------------------------------------
+
+function next(){
+    
+    whichDiv++; // let's move into the next phase of the "screens"
+    nextDiv(); // move onto the next DIV
+    document.body.style.backgroundColor = "white"; //check background colour
+    document.getElementById("maxNum").value = ""; // empty boxes and messages
+    document.getElementById("maxError").innerHTML = "";
+    document.getElementById("guessError").innerHTML = "";
+    document.getElementById("guessNum").value = "";
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div id="section1">
+<td>What is your name?</td>
+<td><input name="name" id="userName" type="text"/></td>
+<td><div id="nameError" style="color:red; horizontal-align: center;" ></div></td>
+<td><input id="checkInput" type="button" value="Submit" onclick="checkName();" /></td>
+</div>
+<div id="section2" style="display:none">
+<div id="message1"></div>
+<td><input name="maxN" id="maxNum" type="text"/></td>
+<td><div id="maxError" style="color:red;horizontal-align: center;"></div></td>
+<td><input id="checkInput" type="button" value="Submit" onclick="checkMax();" /></td>
+</div>
+<div id="section3" style="display:none">
+<div id="message2"></div>
+<div id="message3"></div>
+<td>Please guess a number:</td>
+<td><input name="guess" id="guessNum" type="text"/></td>
+<td><div id="guessError" style="color:red;horizontal-align: center;"></div></td>
+<td><input id="checkInput" type="button" value="Make this Guess" onclick="guessNumber();" /></td>
+<div id="message"></div>
+</div>
+<div id="section4" style="display:none; horizontal-align: center;">
+<td><b>You Win!! You guessed the number!</b></td>
+<td><input id="checkInput" type="button" value="Try Again?" onclick="next();" /></td>
+
+</div>
+
+</body>
+
+</html>
+
